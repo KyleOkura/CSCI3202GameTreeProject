@@ -93,8 +93,6 @@ The web version features:
 - Mobile-friendly interface
 - Real-time board updates
 
-**For Deployment:** See [DEPLOYMENT.md](DEPLOYMENT.md) for instructions on hosting this as a live demo on your website (Heroku, PythonAnywhere, your own server, etc.)
-
 ### Option 3: Running Benchmark Comparisons
 Test different AI algorithms against each other:
 
@@ -129,41 +127,6 @@ The GUI provides an interactive way to play Mancala:
 4. The game ends automatically when one side is empty
 5. Your mancala and opponent's mancala scores are displayed on the sides
 
-## Web Application & Online Demo
-
-Deploy the Mancala Solver as a live web application on your personal website!
-
-### Features
-- **Browser-based**: Play from any device with a web browser
-- **Responsive Design**: Works on desktop, tablet, and mobile
-- **Beautiful UI**: Modern, intuitive interface
-- **Real-time Updates**: Smooth board animations
-- **Shareable**: Get a URL to share with others
-- **Configurable AI**: Adjust algorithm and search depth from the UI
-
-### Running Locally
-```bash
-pip install -r requirements.txt
-python app.py
-```
-Visit `http://localhost:5000` in your browser.
-
-### Deploying Online
-
-For complete deployment instructions, see **[DEPLOYMENT.md](DEPLOYMENT.md)**
-
-**Quick Summary of Options:**
-- **Heroku** (Recommended): Free tier available, easy setup, 30-min sleep on free
-- **PythonAnywhere**: Free tier, always running, beginner-friendly
-- **DigitalOcean**: $5-12/month, best performance, full control
-- **AWS/Azure**: Enterprise-grade, pay-as-you-go
-
-After deployment, you can:
-- Embed the game in your website with an `<iframe>`
-- Use a custom domain (mancala.yoursite.com)
-- Add SSL/HTTPS for security
-- Monitor performance and uptime
-
 ## Algorithms
 
 ### Alpha-Beta Pruning (`alphabeta.py`)
@@ -186,7 +149,6 @@ Builds a game tree by simulating all possible moves from the current position up
 ```
 MancalaSolver/
 ├── README.md                    # This file - Main documentation
-├── DEPLOYMENT.md                # Web deployment guide
 ├── requirements.txt             # Python dependencies for web version
 ├── gui.py                       # Desktop GUI application (tkinter)
 ├── app.py                       # Flask web server
@@ -200,32 +162,6 @@ MancalaSolver/
 └── templates/
     └── index.html               # Web app frontend (Flask)
 ```
-
-## Deploying as a Live Demo on Your Website
-
-To host this as an interactive demo on your personal website, see the comprehensive **[DEPLOYMENT.md](DEPLOYMENT.md)** guide which includes:
-
-- **Step-by-step instructions** for Heroku, PythonAnywhere, and self-hosted options
-- **Cost comparison** of different platforms
-- **Security considerations** for production
-- **Embedding options** (iframe, subdomain, custom domain)
-- **Troubleshooting** common deployment issues
-- **Performance optimization** tips
-
-### Quick Start for Deployment
-
-1. **Choose a Platform** (see DEPLOYMENT.md for details):
-   - Heroku (Free, easiest setup)
-   - PythonAnywhere (Free, always running)
-   - Your own server (Full control)
-
-2. **Follow Platform-Specific Guide** in DEPLOYMENT.md
-
-3. **Test** the deployed application
-
-4. **Embed or Share** with your audience
-
-Most platforms can have you live in under 15 minutes!
 
 ## Future Enhancements
 
