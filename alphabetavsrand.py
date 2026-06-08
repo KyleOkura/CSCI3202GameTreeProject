@@ -91,6 +91,8 @@ for x in results:
 
 totaltime = endtime - starttime
 averagemoves = totalmoves/num_games
+
+
 print(f"Random Player Wins: {randomwins}")
 print(f"Alphabeta wins: {alphabetawins}")
 print(f"Ties: {tie}")

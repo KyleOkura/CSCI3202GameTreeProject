@@ -101,7 +101,7 @@ class Mancala:
                 self.board[current_pit_index] = 0
         elif self.current_player == 2 and current_pit_index in self.p2_pits_index:
             if self.board[current_pit_index] == 1:
-                opposite_pit = self.p1_pits_index[0] + (self.pits_per_player - 1 - current_pit_index)
+                opposite_pit = self.pits_per_player - 1 - (current_pit_index - self.p2_pits_index[0])
                 self.board[self.p2_mancala_index] += self.board[opposite_pit] + 1
                 self.board[opposite_pit] = 0
                 self.board[current_pit_index] = 0

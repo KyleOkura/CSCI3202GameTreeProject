@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mancala Solver - Play Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        select, input[type="range"] {
+            padding: 8px 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        select:hover, input[type="range"]:hover {
+            border-color: #667eea;
+        }
+
+        button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #229954;
+        }
+
+        .game-area {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .board {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: inset 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .board-title {
+            text-align: center;
+            color: #ecf0f1;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .board-row {
+            display: flex;
+            gap: 40px;
+            margin: 30px 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pit {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid;
+            position: relative;
+        }
+
+        .pit:hover {
+            transform: scale(1.1);
+        }
+
+        .pit.player1 {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            border-color: #1e8449;
+        }
+
+        .pit.player1:hover:not(.disabled) {
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+        }
+
+        .pit.player1.disabled {
+            background: #95a5a6;
+            border-color: #7f8c8d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .pit.player2 {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+            border-color: #6c3483;
+        }
+
+        .pit-label {
+            font-size: 0.7em;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+
+        .mancala {
+            width: 80px;
+            height: 130px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            border: 4px solid;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);
+        }
+
+        .mancala.player1 {
+            color: #2ecc71;
+            border-color: #27ae60;
+        }
+
+        .mancala.player2 {
+            color: #9b59b6;
+            border-color: #8e44ad;
+        }
+
+        .mancala-label {
+            font-size: 0.5em;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        .status {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .status-message {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .game-log {
+            background: #f5f7fa;
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 2px solid #ecf0f1;
+        }
+
+        .game-log h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .log-entry {
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-left: 4px solid;
+            border-radius: 3px;
+            font-size: 0.95em;
+        }
+
+        .log-entry.player1 {
+            border-left-color: #2ecc71;
+        }
+
+        .log-entry.player2 {
+            border-left-color: #9b59b6;
+        }
+
+        .winner-message {
+            background: #f4d03f;
+            color: #2c3e50;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ecf0f1;
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .info-panel {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 800px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .control-group {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .game-area {
+                gap: 15px;
+            }
+
+            .info-panel {
+                flex-direction: column;
+            }
+
+            .pit {
+                width: 50px;
+                height: 50px;
+                font-size: 16px;
+            }
+
+            .mancala {
+                width: 70px;
+                height: 110px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 MANCALA SOLVER</h1>
+        <p class="subtitle">Play against AI powered by Minimax or Alpha-Beta Pruning</p>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="algorithm">AI Algorithm:</label>
+                <select id="algorithm">
+                    <option value="alphabeta">Alpha-Beta Pruning</option>
+                    <option value="minimax">Minimax</option>
+                    <option value="random">Random</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="depth" id="depthLabel">Search Depth:</label>
+                <input type="range" id="depth" min="1" max="8" value="5">
+                <span id="depthValue">5</span>
+            </div>
+
+            <button onclick="startNewGame()">New Game</button>
+            <button onclick="resetGame()" id="resetBtn" style="display:none; background: #e67e22;">Reset</button>
+        </div>
+
+        <div id="error" class="error" style="display:none;"></div>
+        <div id="winnerMessage" class="winner-message" style="display:none;"></div>
+
+        <div class="status">
+            <div class="status-message" id="statusMessage">Loading...</div>
+            <div class="score">
+                <div class="score-item">
+                    <div class="score-label" style="font-weight: bold; color: #2ecc71;">👤 YOU</div>
+                    <div class="score-value" id="score1">-</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label" id="opponentScoreLabel" style="font-weight: bold; color: #9b59b6;">🤖 AI</div>
+                    <div class="score-value" id="score2">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <div class="game-area" style="flex: 2;">
+                <div class="board">
+                    <div class="board-title">GAME BOARD</div>
+                    
+                    <div class="board-row">
+                        <div class="mancala player2" id="p2Mancala">
+                            <div id="opponentMancalaName" style="font-size: 0.4em; margin-bottom: 5px; font-weight: bold;">🤖 AI</div>
+                            <div id="p2MancalaScore">0</div>
+                            <div class="mancala-label">Mancala</div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 20px;">
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div id="p2Pits" style="display: flex; gap: 10px;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mancala player1" id="p1Mancala">
+                            <div style="font-size: 0.4em; margin-bottom: 5px; font-weight: bold;">👤 YOU</div>
+                            <div id="p1MancalaScore">0</div>
+                            <div class="mancala-label">Mancala</div>
+                        </div>
+                    </div>
+
+                    <div class="board-row" style="margin-top: 50px;">
+                        <div id="p1Pits" style="display: flex; gap: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-log" style="flex: 1;">
+                <h3>Move Log</h3>
+                <div id="gameLog"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentGameId = null;
+        let gameOver = false;
+
+        function getOpponentName() {
+            const algorithm = document.getElementById('algorithm').value;
+            return algorithm === 'random' ? 'Random' : 'AI';
+        }
+
+        function updateAlgorithmDependentUI() {
+            const algorithm = document.getElementById('algorithm').value;
+            const isRandom = algorithm === 'random';
+            const opponentName = getOpponentName();
+
+            document.getElementById('opponentScoreLabel').textContent = opponentName === 'Random' ? '🎲 RANDOM' : '🤖 AI';
+            document.getElementById('opponentMancalaName').textContent = opponentName === 'Random' ? '🎲 RANDOM' : '🤖 AI';
+
+            const depthInput = document.getElementById('depth');
+            const depthLabel = document.getElementById('depthLabel');
+            const depthValue = document.getElementById('depthValue');
+
+            depthInput.disabled = isRandom;
+            depthInput.style.opacity = isRandom ? '0.5' : '1';
+            depthLabel.style.opacity = isRandom ? '0.5' : '1';
+            depthValue.style.opacity = isRandom ? '0.5' : '1';
+        }
+
+        document.getElementById('depth').addEventListener('input', (e) => {
+            document.getElementById('depthValue').textContent = e.target.value;
+        });
+
+        document.getElementById('algorithm').addEventListener('change', () => {
+            updateAlgorithmDependentUI();
+        });
+
+        async function startNewGame() {
+            const algorithm = document.getElementById('algorithm').value;
+            const depth = parseInt(document.getElementById('depth').value);
+
+            try {
+                const response = await fetch('/api/new-game', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ algorithm, depth })
+                });
+
+                const data = await response.json();
+                currentGameId = data.game_id;
+                gameOver = false;
+                
+                document.getElementById('error').style.display = 'none';
+                document.getElementById('winnerMessage').style.display = 'none';
+                document.getElementById('resetBtn').style.display = 'none';
+                
+                updateGameDisplay();
+            } catch (error) {
+                showError('Failed to start new game: ' + error.message);
+            }
+        }
+
+        async function resetGame() {
+            if (!currentGameId) return;
+
+            try {
+                const response = await fetch(`/api/game/${currentGameId}/reset`, {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+                gameOver = false;
+                
+                document.getElementById('error').style.display = 'none';
+                document.getElementById('winnerMessage').style.display = 'none';
+                document.getElementById('resetBtn').style.display = 'none';
+                
+                updateGameDisplay();
+            } catch (error) {
+                showError('Failed to reset game: ' + error.message);
+            }
+        }
+
+        async function updateGameDisplay() {
+            if (!currentGameId) return;
+
+            try {
+                const response = await fetch(`/api/game/${currentGameId}`);
+                if (!response.ok) throw new Error('Failed to fetch game state');
+                
+                const data = await response.json();
+                const game = data.game;
+                const board = game.board;
+
+                // Update scores
+                document.getElementById('score1').textContent = game.p1_mancala;
+                document.getElementById('score2').textContent = game.p2_mancala;
+                document.getElementById('p1MancalaScore').textContent = game.p1_mancala;
+                document.getElementById('p2MancalaScore').textContent = game.p2_mancala;
+
+                // Draw P1 pits
+                const p1PitsDiv = document.getElementById('p1Pits');
+                p1PitsDiv.innerHTML = '';
+                for (let i = 0; i < 6; i++) {
+                    const stones = board[i];
+                    const pit = document.createElement('div');
+                    pit.className = 'pit player1';
+                    
+                    const isValid = game.valid_moves.includes(i + 1);
+                    if (!isValid) pit.classList.add('disabled');
+                    
+                    pit.innerHTML = `<span class="pit-label">P${i+1}</span>${stones}`;
+                    pit.onclick = () => makeMove(i + 1);
+                    p1PitsDiv.appendChild(pit);
+                }
+
+                // Draw P2 pits (reversed for visualization)
+                const p2PitsDiv = document.getElementById('p2Pits');
+                p2PitsDiv.innerHTML = '';
+                for (let i = 5; i >= 0; i--) {
+                    const pitIndex = 7 + i; // Board indices 7-12 for P2
+                    const stones = board[pitIndex];
+                    const pit = document.createElement('div');
+                    pit.className = 'pit player2';
+                    pit.innerHTML = `<span class="pit-label">P${i+1}</span>${stones}`;
+                    p2PitsDiv.appendChild(pit);
+                }
+
+                // Update status
+                if (gameOver) {
+                    document.getElementById('statusMessage').textContent = '🎉 Game Over! 🎉';
+                    document.getElementById('resetBtn').style.display = 'inline-block';
+                } else if (game.current_player === 1) {
+                    document.getElementById('statusMessage').innerHTML = '👉 Your Turn - Click a pit to move';
+                } else {
+                    document.getElementById('statusMessage').innerHTML = '⏳ AI is thinking...';
+                }
+
+                // Update game log
+                const gameLog = document.getElementById('gameLog');
+                gameLog.innerHTML = '';
+                for (let i = data.moves_log.length - 1; i >= 0; i--) {
+                    const move = data.moves_log[i];
+                    const entry = document.createElement('div');
+                    entry.className = `log-entry ${move.player === 'User' ? 'player1' : 'player2'}`;
+                    entry.textContent = `${move.player} played pit ${move.pit}`;
+                    gameLog.appendChild(entry);
+                }
+
+                // Check for winner
+                if (data.winner) {
+                    gameOver = true;
+                    document.getElementById('winnerMessage').style.display = 'block';
+                    document.getElementById('winnerMessage').textContent = data.message;
+                    document.getElementById('resetBtn').style.display = 'inline-block';
+                    document.getElementById('statusMessage').textContent = data.message;
+                }
+            } catch (error) {
+                showError('Failed to update game: ' + error.message);
+            }
+        }
+
+        async function makeMove(pit) {
+            if (gameOver || !currentGameId) return;
+
+            document.getElementById('statusMessage').innerHTML = '<span class="loading"></span> Making move...';
+            
+            try {
+                const response = await fetch(`/api/game/${currentGameId}/move`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ pit })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    showError(error.error || 'Invalid move');
+                    updateGameDisplay();
+                    return;
+                }
+
+                const data = await response.json();
+                
+                // Small delay for visual effect
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                updateGameDisplay();
+                
+                // If AI moved, wait a bit then check again
+                if (data.ai_move !== null && !data.game.game_over) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    updateGameDisplay();
+                }
+            } catch (error) {
+                showError('Error making move: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Start game on page load
+        window.addEventListener('load', () => {
+            updateAlgorithmDependentUI();
+            startNewGame();
+        });
+    </script>
+</body>
+</html>
