@@ -7,7 +7,6 @@ A sophisticated implementation of the Mancala game with AI players using minimax
 - [Rules](#rules)
 - [Game Rules Used](#game-rules-used)
 - [How to Run](#how-to-run)
-- [GUI Application](#gui-application)
 - [Algorithms](#algorithms)
 - [Project Structure](#project-structure)
 
@@ -50,7 +49,7 @@ Mancala is an ancient family of board games played around the world. In this imp
 
 ### Requirements
 - Python 3.6 or higher
-- For web version: Flask 2.0+ (see requirements.txt)
+- Flask 2.0+ (see requirements.txt)
 
 ### Installation
 1. Clone or download this repository
@@ -59,20 +58,7 @@ Mancala is an ancient family of board games played around the world. In this imp
    cd MancalaSolver
    ```
 
-### Option 1: Desktop GUI Application (Recommended for Local Play)
-```bash
-python gui.py
-```
-The GUI allows you to play against AI opponents with different difficulty levels.
-
-**Features:**
-- Interactive board visualization
-- Select algorithm (Minimax or Alpha-Beta)
-- Adjustable search depth
-- Game log tracking
-- Simple one-click gameplay
-
-### Option 2: Web Application (Recommended for Website Deployment)
+### Web Application
 
 First, install Flask dependencies:
 ```bash
@@ -93,7 +79,7 @@ The web version features:
 - Mobile-friendly interface
 - Real-time board updates
 
-### Option 3: Running Benchmark Comparisons
+### Running Benchmark Comparisons
 Test different AI algorithms against each other:
 
 ```bash
@@ -106,26 +92,6 @@ python minimaxvsrand.py
 # Random vs Random (100 games)
 python randvsrand.py
 ```
-
-## GUI Application
-
-The GUI provides an interactive way to play Mancala:
-
-### Features
-- **Visual Board Display**: See the current game state clearly with color-coded pits
-- **AI Opponents**: Play against intelligent AI using minimax or alpha-beta pruning
-- **Difficulty Levels**: Choose search depth (1-8) for AI intelligence
-- **Algorithm Selection**: Switch between minimax and alpha-beta algorithms on the fly
-- **Move History**: Track all moves made in the game
-- **Easy Reset**: Start a new game anytime
-- **Real-time Feedback**: Immediate visual updates and game log
-
-### Playing
-1. Click on one of your pits (numbered 1-6, highlighted in green) to make a move
-2. The AI will automatically respond with its move
-3. Watch the stone distribution happen in real-time on the board
-4. The game ends automatically when one side is empty
-5. Your mancala and opponent's mancala scores are displayed on the sides
 
 ## Algorithms
 
@@ -150,7 +116,6 @@ Builds a game tree by simulating all possible moves from the current position up
 MancalaSolver/
 ├── README.md                    # This file - Main documentation
 ├── requirements.txt             # Python dependencies for web version
-├── gui.py                       # Desktop GUI application (tkinter)
 ├── app.py                       # Flask web server
 ├── mancala.py                   # Core game logic
 ├── alphabeta.py                 # Alpha-beta pruning algorithm
@@ -166,7 +131,7 @@ MancalaSolver/
 ## Future Enhancements
 
 - [ ] Extra turn rule (landing in mancala)
-- [ ] Difficulty selection in GUI
+- [ ] Difficulty presets for web interface
 - [ ] Game statistics and win rates
 - [ ] Network multiplayer support
 - [ ] Mobile app version
